@@ -1,6 +1,6 @@
 import "./App.css"
 import Footer from "./components/footer/Footer"
-import Navbar from "./components/navbar/Navbar"
+import NavbarC from "./components/navbar/NavbarC"
 import HomePage from "./pages/HomePage"
 import LoginPage from "./pages/LoginPage"
 import RegisterPage from "./pages/RegisterPage"
@@ -9,7 +9,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router"
 const App = () => {
   return (
     <>
-      <Navbar />
+      <NavbarC />
       <Router>
         <Routes>
           <Route path="/register" element={<RegisterPage />} />

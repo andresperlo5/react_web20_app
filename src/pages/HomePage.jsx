@@ -1,22 +1,23 @@
-import Card from "../components/card/Card"
-import Carousel from "../components/carousel/Carousel"
+import CardC from "../components/card/CardC"
+import CarouselC from "../components/carousel/CarouselC"
 
 const HomePage = () => {
   return (
     <>
 
-      <Carousel />
+      <CarouselC />
 
       <main>
+        <h2 className="text-center my-5">Nuestros Productos</h2>
         <div className="container">
           <div className="row">
             <div className="col-12 col-md-6 col-lg-4">
-              <Card />
+              <CardC />
             </div>
           </div>
         </div>
 
-        <h2 className="text-center my-5">Nuestros Productos</h2>
+
 
       </main>
     </>
