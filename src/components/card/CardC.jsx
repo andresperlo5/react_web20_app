@@ -1,22 +1,25 @@
-import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
+import Button from "react-bootstrap/Button";
+import Card from "react-bootstrap/Card";
+import "./Card.css";
 
-const CardC = () => {
+const CardC = ({ image, title, price, description }) => {
   return (
     <>
-      <Card className='my-5'>
-        <Card.Img variant="top" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsAIRhL8x4JonCGt6vtl3e_eeehqpMEyIdBA&s" />
+      <Card className="my-5">
+        <div className="div-image">
+          <Card.Img variant="top" src={image} />
+        </div>
         <Card.Body>
-          <Card.Title>Card Title</Card.Title>
-          <Card.Text>
-            Some quick example text to build on the card title and make up the
-            bulk of the card's content.
-          </Card.Text>
-          <Button variant="primary">Go somewhere</Button>
+          <Card.Title className="text-truncate">{title}</Card.Title>
+          <Card.Text>${price}</Card.Text>
+          <Card.Text className="text-truncate">{description}</Card.Text>
+          <a href="/product-detail" className="btn btn-primary">
+            Ver Mas
+          </a>
         </Card.Body>
       </Card>
     </>
-  )
-}
+  );
+};
 
-export default CardC
+export default CardC;

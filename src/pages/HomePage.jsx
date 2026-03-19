@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import CardC from "../components/card/CardC";
 import CarouselC from "../components/carousel/CarouselC";
+import { Col, Container, Row } from "react-bootstrap";
 
 const HomePage = () => {
   const [productos, setProductos] = useState([]);
 
   const obtenerProductosFakeStore = async () => {
     const productosApi = await fetch("https://fakestoreapi.com/products");
-    const productos = await productosApi.json();
-    localStorage.setItem("productos", JSON.stringify(productos));
-    setProductos(productos);
+    const productosFS = await productosApi.json();
+    localStorage.setItem("productos", JSON.stringify(productosFS));
+    setProductos(productosFS);
   };
 
   // ciclos de vida de un componente
@@ -34,19 +35,26 @@ const HomePage = () => {
        )
       }, []); */
 
+  const productosMap = productos.map((producto) => (
+    <Col key={producto.id} sm="12" md="6" lg="3">
+      <CardC
+        image={producto.image}
+        title={producto.title}
+        price={producto.price}
+        description={producto.description}
+      />
+    </Col>
+  ));
+
   return (
     <>
       <CarouselC />
 
       <main>
         <h2 className="text-center my-5">Nuestros Productos</h2>
-        <div className="container">
-          <div className="row">
-            <div className="col-12 col-md-6 col-lg-4">
-              <CardC />
-            </div>
-          </div>
-        </div>
+        <Container>
+          <Row>{productosMap}</Row>
+        </Container>
       </main>
     </>
   );

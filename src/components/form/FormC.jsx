@@ -39,6 +39,9 @@ const FormC = ({ idPage }) => {
 
   const handleClickBottomRegister = (ev) => {
     ev.preventDefault();
+
+    const usuariosLs = JSON.parse(localStorage.getItem("usuarios")) || [];
+
     const {
       nombreUsuario,
       emailUsuairo,
@@ -53,16 +56,62 @@ const FormC = ({ idPage }) => {
         text: "En breve seras redirigido a iniciar tu sesion!",
         icon: "success",
       });
+
+      usuariosLs.push(formulario);
+
+      localStorage.setItem("usuarios", JSON.stringify(usuariosLs));
     }
   };
 
   const handleChangeLogin = (ev) => {
-    const { nombreUsuario, contrasenia } = formLog;
+    setFormLog({ ...formLog, [ev.target.name]: ev.target.value });
   };
 
   const handleClickBottomLog = (ev) => {
     ev.preventDefault();
+    const { nombreUsuario, contrasenia } = formLog;
     console.log(formLog);
+    const usuariosLs = JSON.parse(localStorage.getItem("usuarios"));
+    const indexUser = usuariosLs.findIndex(
+      (usuario) => usuario.nombreUsuario === nombreUsuario,
+    );
+
+    const usuarioExiste = usuariosLs.find(
+      (usuario) => usuario.nombreUsuario === nombreUsuario,
+    );
+
+    if (!usuarioExiste) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Usuario y/o contraseña no coinciden. USUARIO",
+      });
+
+      return;
+    }
+
+    if (usuarioExiste.contrasenia !== contrasenia) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Usuario y/o contraseña no coinciden. CONTRASEÑA",
+      });
+
+      return;
+    }
+
+    usuarioExiste.login = true;
+
+    sessionStorage.setItem("usuarioLog", JSON.stringify(usuarioExiste));
+    usuariosLs[indexUser] = usuarioExiste;
+
+    localStorage.setItem("usuarios", JSON.stringify(usuariosLs));
+
+    if (usuarioExiste.rolUsuario === "admin") {
+      location.href = "/home-admin";
+    } else {
+      location.href = "/home-user";
+    }
   };
 
   return (
@@ -74,6 +123,7 @@ const FormC = ({ idPage }) => {
             <Form.Control
               type="text"
               placeholder="Enter email"
+              name="nombreUsuario"
               onChange={handleChangeLogin}
             />
             <Form.Text className="text-muted">
@@ -85,6 +135,7 @@ const FormC = ({ idPage }) => {
             <Form.Label>Contraseña</Form.Label>
             <Form.Control
               type="password"
+              name="contrasenia"
               placeholder="Enter email"
               onChange={handleChangeLogin}
             />
