@@ -7,10 +7,16 @@ const HomePage = () => {
   const [productos, setProductos] = useState([]);
 
   const obtenerProductosFakeStore = async () => {
-    const productosApi = await fetch("https://fakestoreapi.com/products");
-    const productosFS = await productosApi.json();
-    localStorage.setItem("productos", JSON.stringify(productosFS));
-    setProductos(productosFS);
+    const productosLs = JSON.parse(localStorage.getItem("productos")) || [];
+
+    if (productosLs.length) {
+      setProductos(productosLs);
+    } else {
+      const productosApi = await fetch("https://fakestoreapi.com/products");
+      const productosFS = await productosApi.json();
+      localStorage.setItem("productos", JSON.stringify(productosFS));
+      setProductos(productosFS);
+    }
   };
 
   // ciclos de vida de un componente

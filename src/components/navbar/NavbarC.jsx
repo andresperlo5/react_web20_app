@@ -4,7 +4,7 @@ import Navbar from "react-bootstrap/Navbar";
 import Swal from "sweetalert2";
 
 const NavbarC = () => {
-  const homeAdmin = location.href.split("/")[3];
+  const homeAdmin = location.href.split("/")[3] || null;
 
   const cerrarSesionUsuario = () => {
     const usuarioLog = JSON.parse(sessionStorage.getItem("usuarioLog"));
@@ -33,14 +33,18 @@ const NavbarC = () => {
     <>
       <Navbar expand="lg" className="bg-body-tertiary">
         <Container fluid>
-          <Navbar.Brand href="/">Logo</Navbar.Brand>
+          <Navbar.Brand href={homeAdmin ? "/home-admin" : "/"}>
+            Logo
+          </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             {homeAdmin ? (
               <Nav className="ms-auto">
-                <Nav.Link href="/">Inicio</Nav.Link>
-                <Nav.Link href="/contact">Panel Usuarios</Nav.Link>
-                <Nav.Link href="/aboutUs">Panel Productos</Nav.Link>
+                <Nav.Link href={homeAdmin ? "/home-admin" : "/"}>
+                  Inicio
+                </Nav.Link>
+                <Nav.Link href="/admin-users">Panel Usuarios</Nav.Link>
+                <Nav.Link href="/admin-products">Panel Productos</Nav.Link>
               </Nav>
             ) : (
               <Nav className="ms-auto">
