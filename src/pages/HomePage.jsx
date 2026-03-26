@@ -14,8 +14,23 @@ const HomePage = () => {
     } else {
       const productosApi = await fetch("https://fakestoreapi.com/products");
       const productosFS = await productosApi.json();
-      localStorage.setItem("productos", JSON.stringify(productosFS));
-      setProductos(productosFS);
+      const productosConNuevaPropiedad = [];
+
+      productosFS.forEach((producto) => {
+        const nuevasProdpiedadesObjetoFS = {
+          ...producto,
+          destacar: false,
+          bloqueo: false,
+        };
+
+        productosConNuevaPropiedad.push(nuevasProdpiedadesObjetoFS);
+      });
+
+      localStorage.setItem(
+        "productos",
+        JSON.stringify(productosConNuevaPropiedad),
+      );
+      setProductos(productosConNuevaPropiedad);
     }
   };
 
@@ -41,16 +56,29 @@ const HomePage = () => {
        )
       }, []); */
 
-  const productosMap = productos.map((producto) => (
-    <Col key={producto.id} sm="12" md="6" lg="3">
-      <CardC
-        image={producto.image}
-        title={producto.title}
-        price={producto.price}
-        description={producto.description}
-      />
-    </Col>
-  ));
+  const productosMap = productos.map(
+    (producto) =>
+      !producto.bloqueo &&
+      (producto.destacar ? (
+        <Col key={producto.id} sm="12" md="6" lg="3" className="order-first">
+          <CardC
+            image={producto.image}
+            title={producto.title}
+            price={producto.price}
+            description={producto.description}
+          />
+        </Col>
+      ) : (
+        <Col key={producto.id} sm="12" md="6" lg="3">
+          <CardC
+            image={producto.image}
+            title={producto.title}
+            price={producto.price}
+            description={producto.description}
+          />
+        </Col>
+      )),
+  );
 
   return (
     <>
