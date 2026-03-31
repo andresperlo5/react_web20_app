@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import { useParams } from "react-router";
 import Swal from "sweetalert2";
 
 const AdminCreateProductPage = () => {
+  const idParams = useParams();
+  const idProduct = Number(idParams.idProduct);
+
   const [formProd, setFormProd] = useState({
     title: "",
     price: "",
@@ -18,36 +22,66 @@ const AdminCreateProductPage = () => {
 
   const handleClickCreateProduct = (ev) => {
     ev.preventDefault();
-
-    console.log(formProd);
-
     const productosLs = JSON.parse(localStorage.getItem("productos")) || [];
     console.log(productosLs);
-    const nuevoIdProd = productosLs[productosLs.length - 1]?.id + 1 || 1;
 
-    const nuevoProducto = {
-      id: nuevoIdProd,
-      ...formProd,
-    };
+    if (idProduct) {
+      const indexProd = productosLs.findIndex((prod) => prod.id === idProduct);
+      productosLs[indexProd] = formProd;
 
-    productosLs.push(nuevoProducto);
+      localStorage.setItem("productos", JSON.stringify(productosLs));
 
-    localStorage.setItem("productos", JSON.stringify(productosLs));
+      Swal.fire({
+        title: "Producto editado con exito!",
+        text: "En breve seras redirigido al panel de productos!",
+        icon: "success",
+      });
 
-    Swal.fire({
-      title: "Producto creado con exito!",
-      text: "En breve seras redirigido al panel de productos!",
-      icon: "success",
-    });
+      setTimeout(() => {
+        location.href = "/admin-products";
+      }, 1000);
+    } else {
+      const nuevoIdProd = productosLs[productosLs.length - 1]?.id + 1 || 1;
 
-    setTimeout(() => {
-      location.href = "/admin-products";
-    }, 1000);
+      const nuevoProducto = {
+        id: nuevoIdProd,
+        ...formProd,
+      };
+
+      productosLs.push(nuevoProducto);
+
+      localStorage.setItem("productos", JSON.stringify(productosLs));
+
+      Swal.fire({
+        title: "Producto creado con exito!",
+        text: "En breve seras redirigido al panel de productos!",
+        icon: "success",
+      });
+
+      setTimeout(() => {
+        location.href = "/admin-products";
+      }, 1000);
+    }
   };
+
+  const obtenerDatosDelProductoEditar = () => {
+    const productosLs = JSON.parse(localStorage.getItem("productos"));
+    const productoEditar = productosLs.find(
+      (producto) => producto.id === idProduct,
+    );
+
+    setFormProd(productoEditar);
+  };
+
+  useEffect(() => {
+    if (idParams) obtenerDatosDelProductoEditar();
+  }, []);
 
   return (
     <>
-      <h2 className="text-center my-5">Crear Nuevo Producto</h2>
+      <h2 className="text-center my-5">
+        {idProduct ? "Editar Producto" : "Crear Nuevo Producto"}
+      </h2>
 
       <Container className="d-flex justify-content-center">
         <Form className="w-25">
@@ -55,6 +89,7 @@ const AdminCreateProductPage = () => {
             <Form.Label>Titulo</Form.Label>
             <Form.Control
               name="title"
+              value={formProd?.title}
               type="text"
               placeholder="Enter email"
               onChange={handleChangeCreateProduct}
@@ -68,6 +103,7 @@ const AdminCreateProductPage = () => {
             <Form.Label>Precio</Form.Label>
             <Form.Control
               name="price"
+              value={formProd?.price}
               type="text"
               placeholder="Enter email"
               onChange={handleChangeCreateProduct}
@@ -81,6 +117,7 @@ const AdminCreateProductPage = () => {
             <Form.Label>Descripcion</Form.Label>
             <Form.Control
               name="description"
+              value={formProd?.description}
               type="text"
               placeholder="Enter email"
               onChange={handleChangeCreateProduct}
@@ -94,6 +131,7 @@ const AdminCreateProductPage = () => {
             <Form.Label>Imagen</Form.Label>
             <Form.Control
               name="image"
+              value={formProd?.image}
               type="text"
               placeholder="Enter email"
               onChange={handleChangeCreateProduct}
@@ -109,7 +147,7 @@ const AdminCreateProductPage = () => {
               type="submit"
               onClick={handleClickCreateProduct}
             >
-              Crear Producto
+              {idProduct ? "Guardar Cambios" : "Crear Producto"}
             </Button>
           </div>
         </Form>

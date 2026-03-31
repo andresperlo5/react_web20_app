@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 
 const NavbarC = () => {
   const homeAdmin = location.href.split("/")[3] || null;
-
+  console.log(homeAdmin);
   const cerrarSesionUsuario = () => {
     const usuarioLog = JSON.parse(sessionStorage.getItem("usuarioLog"));
     const usuariosLs = JSON.parse(localStorage.getItem("usuarios"));
@@ -38,7 +38,7 @@ const NavbarC = () => {
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            {homeAdmin ? (
+            {homeAdmin === "home-admin" ? (
               <Nav className="ms-auto">
                 <Nav.Link href={homeAdmin ? "/home-admin" : "/"}>
                   Inicio
@@ -53,7 +53,7 @@ const NavbarC = () => {
                 <Nav.Link href="/aboutUs">Sobre Nosotros</Nav.Link>
               </Nav>
             )}
-            {homeAdmin ? (
+            {homeAdmin === "home-admin" || homeAdmin === "home-user" ? (
               <Nav className="ms-auto">
                 <Nav.Link href="#" onClick={cerrarSesionUsuario}>
                   Cerrar Sesion

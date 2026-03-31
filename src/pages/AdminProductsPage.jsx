@@ -5,7 +5,10 @@ import ModalC from "../components/modal/ModalC";
 const AdminProductsPage = () => {
   return (
     <>
-      <a href="/admin-products/create" className="btn btn-primary ms-3 mt-3">
+      <a
+        href="/admin-products/createEdit/create"
+        className="btn btn-primary ms-3 mt-3"
+      >
         Crear Producto Nuevo
       </a>
       <div className="ms-3 mt-3">

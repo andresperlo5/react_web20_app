@@ -57,7 +57,10 @@ const FormC = ({ idPage }) => {
         icon: "success",
       });
 
-      usuariosLs.push(formulario);
+      usuariosLs.push({
+        id: usuariosLs[usuariosLs.length - 1]?.id + 1 || 1,
+        ...formulario,
+      });
 
       localStorage.setItem("usuarios", JSON.stringify(usuariosLs));
     }
@@ -97,6 +100,15 @@ const FormC = ({ idPage }) => {
         text: "Usuario y/o contraseña no coinciden. CONTRASEÑA",
       });
 
+      return;
+    }
+
+    if (usuarioExiste.bloqueo) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Usuario bloqueado debes comunicarte con un administrador",
+      });
       return;
     }
 

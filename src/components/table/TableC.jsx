@@ -154,6 +154,55 @@ const TableC = ({ idPage }) => {
     }
   };
 
+  /* Funciones para usuarios */
+  const deleteUser = (idUser, index) => {
+    Swal.fire({
+      title: "Estas seguro de que quieres eliminar a este usuario?",
+      text: "no podras volver a ver esta informacion!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const usuariosLs = JSON.parse(localStorage.getItem("usuarios"));
+        usuariosLs.splice(index, 1);
+        localStorage.setItem("usuarios", JSON.stringify(usuariosLs));
+
+        Swal.fire({
+          title: "Usuario eliminado con exito!",
+          icon: "success",
+        });
+      }
+    });
+  };
+
+  const highlightOneUser = (idUser, index) => {
+    const usuariosLs = JSON.parse(localStorage.getItem("usuarios"));
+    const usuarioActual = usuariosLs.find((user) => user.id === idUser);
+
+    Swal.fire({
+      title: `Estas seguro de que quieres ${usuarioActual.bloqueo ? "desbloquear" : "bloquear"} a este usuario?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        usuarioActual.bloqueo = !usuarioActual.bloqueo;
+
+        localStorage.setItem("usuarios", JSON.stringify(usuariosLs));
+
+        Swal.fire({
+          title: `Usuario ${usuarioActual.bloqueo ? "bloqueado" : "desbloqueado"} con exito!`,
+          icon: "success",
+        });
+      }
+    });
+  };
+
   const theadTableProduct = (
     <tr>
       <th>ID</th>
@@ -193,7 +242,12 @@ const TableC = ({ idPage }) => {
         >
           Eliminar
         </button>
-        <button className="btn btn-outline-success">Editar</button>
+        <a
+          href={`/admin-products/createEdit/${producto.id}`}
+          className="btn btn-outline-success"
+        >
+          Editar
+        </a>
         {producto.destacar ? (
           <button
             className="btn btn-info"
@@ -219,22 +273,34 @@ const TableC = ({ idPage }) => {
     </tr>
   ));
 
-  const trTableUser = usuarios.map((usuario, i) => (
-    <tr key={i}>
-      <td className="w-25">{i + 1}</td>
-      <td className="w-75"> {usuario.nombreUsuario}</td>
-      <td>{usuario.correoUsuario}</td>
-      <td className="w-25">
-        <p>{usuario.rolUsuario}</p>
-      </td>
-      <td>
-        <button className="btn btn-outline-danger">Eliminar</button>
-        <button className="btn btn-outline-success">Editar</button>
-        <button className="btn btn-outline-info">Destacar</button>
-        <button className="btn btn-outline-warning">Bloquear</button>
-      </td>
-    </tr>
-  ));
+  const trTableUser = usuarios.map(
+    (usuario, i) =>
+      !usuario.login && (
+        <tr key={i}>
+          <td className="w-25">{i + 1}</td>
+          <td className="w-75"> {usuario.nombreUsuario}</td>
+          <td>{usuario.correoUsuario}</td>
+          <td className="w-25">
+            <p>{usuario.rolUsuario}</p>
+          </td>
+          <td>
+            <button
+              className="btn btn-outline-danger"
+              onClick={() => deleteUser(usuario.id, i)}
+            >
+              Eliminar
+            </button>
+            <button className="btn btn-outline-success">Editar</button>
+            <button
+              className="btn btn-outline-warning"
+              onClick={() => highlightOneUser(usuario.id, i)}
+            >
+              {usuario.bloqueo ? "Desbloquear" : "Bloquear"}
+            </button>
+          </td>
+        </tr>
+      ),
+  );
 
   useEffect(() => {
     if (idPage === "adminUsersPage") {
