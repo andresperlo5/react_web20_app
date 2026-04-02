@@ -12,6 +12,8 @@ import AdminPage from "./pages/AdminPage";
 import AdminProductsPage from "./pages/AdminProductsPage";
 import AdminUsersPage from "./pages/AdminUsersPage";
 import AdminCreateProductPage from "./pages/AdminCreateProductPage";
+import FavPage from "./pages/FavPage";
+import CartPage from "./pages/CartPage";
 
 const App = () => {
   return (
@@ -20,6 +22,8 @@ const App = () => {
       <Router>
         <Routes>
           <Route path="/home-user" element={<UserPage />} />
+          <Route path="/user-fav" element={<FavPage />} />
+          <Route path="/user-cart" element={<CartPage />} />
           <Route
             path="/admin-products/createEdit/:idProduct"
             element={<AdminCreateProductPage />}
@@ -30,6 +34,10 @@ const App = () => {
           <Route path="/product-details" element={<ProductDetailPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route
+            path="/product-detail/:idProduct"
+            element={<ProductDetailPage />}
+          />
           <Route path="/" element={<HomePage />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>

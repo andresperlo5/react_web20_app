@@ -2,7 +2,7 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import "./Card.css";
 
-const CardC = ({ image, title, price, description }) => {
+const CardC = ({ image, title, price, description, idProduct }) => {
   return (
     <>
       <Card className="my-5">
@@ -13,7 +13,7 @@ const CardC = ({ image, title, price, description }) => {
           <Card.Title className="text-truncate">{title}</Card.Title>
           <Card.Text>${price}</Card.Text>
           <Card.Text className="text-truncate">{description}</Card.Text>
-          <a href="/product-detail" className="btn btn-primary">
+          <a href={`/product-detail/${idProduct}`} className="btn btn-primary">
             Ver Mas
           </a>
         </Card.Body>

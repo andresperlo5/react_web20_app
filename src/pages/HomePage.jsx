@@ -3,7 +3,7 @@ import CardC from "../components/card/CardC";
 import CarouselC from "../components/carousel/CarouselC";
 import { Col, Container, Row } from "react-bootstrap";
 
-const HomePage = () => {
+const HomePage = ({ idPage }) => {
   const [productos, setProductos] = useState([]);
 
   const obtenerProductosFakeStore = async () => {
@@ -66,6 +66,7 @@ const HomePage = () => {
             title={producto.title}
             price={producto.price}
             description={producto.description}
+            idProduct={producto.id}
           />
         </Col>
       ) : (
@@ -75,6 +76,7 @@ const HomePage = () => {
             title={producto.title}
             price={producto.price}
             description={producto.description}
+            idProduct={producto.id}
           />
         </Col>
       )),
@@ -82,7 +84,7 @@ const HomePage = () => {
 
   return (
     <>
-      <CarouselC />
+      {idPage !== "homeUser" && <CarouselC />}
 
       <main>
         <h2 className="text-center my-5">Nuestros Productos</h2>

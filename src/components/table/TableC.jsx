@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Table from "react-bootstrap/Table";
 import Swal from "sweetalert2";
+import ModalC from "../modal/ModalC";
 
 const TableC = ({ idPage }) => {
   const [productos, setProductos] = useState([]);
@@ -290,7 +291,12 @@ const TableC = ({ idPage }) => {
             >
               Eliminar
             </button>
-            <button className="btn btn-outline-success">Editar</button>
+            {/*  <button className="btn btn-outline-success">Editar</button> */}
+            <ModalC
+              idPage="tableUser"
+              usuario={usuario}
+              obtenerUsuarios={obtenerUsuarios}
+            />
             <button
               className="btn btn-outline-warning"
               onClick={() => highlightOneUser(usuario.id, i)}

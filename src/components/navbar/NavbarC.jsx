@@ -5,9 +5,9 @@ import Swal from "sweetalert2";
 
 const NavbarC = () => {
   const homeAdmin = location.href.split("/")[3] || null;
-  console.log(homeAdmin);
+  const usuarioLog = JSON.parse(sessionStorage.getItem("usuarioLog"));
+
   const cerrarSesionUsuario = () => {
-    const usuarioLog = JSON.parse(sessionStorage.getItem("usuarioLog"));
     const usuariosLs = JSON.parse(localStorage.getItem("usuarios"));
 
     const indexUser = usuariosLs.findIndex(
@@ -33,18 +33,43 @@ const NavbarC = () => {
     <>
       <Navbar expand="lg" className="bg-body-tertiary">
         <Container fluid>
-          <Navbar.Brand href={homeAdmin ? "/home-admin" : "/"}>
+          <Navbar.Brand
+            href={
+              usuarioLog?.rolUsuario === "admin"
+                ? "/home-admin"
+                : usuarioLog?.rolUsuario === "usuario"
+                  ? "home-user"
+                  : "/"
+            }
+          >
             Logo
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            {homeAdmin === "home-admin" ? (
+            {usuarioLog?.rolUsuario === "admin" ? (
               <Nav className="ms-auto">
-                <Nav.Link href={homeAdmin ? "/home-admin" : "/"}>
+                <Nav.Link
+                  href={
+                    usuarioLog?.rolUsuario === "admin" ? "/home-admin" : "/"
+                  }
+                >
                   Inicio
                 </Nav.Link>
                 <Nav.Link href="/admin-users">Panel Usuarios</Nav.Link>
                 <Nav.Link href="/admin-products">Panel Productos</Nav.Link>
+              </Nav>
+            ) : usuarioLog?.rolUsuario === "usuario" ? (
+              <Nav className="ms-auto">
+                <Nav.Link
+                  href={
+                    usuarioLog?.rolUsuario === "usuario" ? "/home-user" : "/"
+                  }
+                >
+                  Inicio
+                </Nav.Link>
+                <Nav.Link href="/user-fav">Favoritos</Nav.Link>
+                <Nav.Link href="/user-cart">Carrito</Nav.Link>
+                <Nav.Link href="/admin-products">Galeria</Nav.Link>
               </Nav>
             ) : (
               <Nav className="ms-auto">
@@ -53,7 +78,8 @@ const NavbarC = () => {
                 <Nav.Link href="/aboutUs">Sobre Nosotros</Nav.Link>
               </Nav>
             )}
-            {homeAdmin === "home-admin" || homeAdmin === "home-user" ? (
+            {usuarioLog?.rolUsuario === "admin" ||
+            usuarioLog?.rolUsuario === "usuario" ? (
               <Nav className="ms-auto">
                 <Nav.Link href="#" onClick={cerrarSesionUsuario}>
                   Cerrar Sesion
