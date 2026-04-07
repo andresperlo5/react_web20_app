@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Table from "react-bootstrap/Table";
 import Swal from "sweetalert2";
 import ModalC from "../modal/ModalC";
+import { Link } from "react-router";
 
 const TableC = ({ idPage }) => {
   const [productos, setProductos] = useState([]);
@@ -243,12 +244,12 @@ const TableC = ({ idPage }) => {
         >
           Eliminar
         </button>
-        <a
-          href={`/admin-products/createEdit/${producto.id}`}
+        <Link
+          to={`/admin-products/createEdit/${producto.id}`}
           className="btn btn-outline-success"
         >
           Editar
-        </a>
+        </Link>
         {producto.destacar ? (
           <button
             className="btn btn-info"

@@ -1,6 +1,7 @@
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import "./Card.css";
+import { Link } from "react-router";
 
 const CardC = ({ image, title, price, description, idProduct }) => {
   return (
@@ -13,9 +14,9 @@ const CardC = ({ image, title, price, description, idProduct }) => {
           <Card.Title className="text-truncate">{title}</Card.Title>
           <Card.Text>${price}</Card.Text>
           <Card.Text className="text-truncate">{description}</Card.Text>
-          <a href={`/product-detail/${idProduct}`} className="btn btn-primary">
+          <Link to={`/product-detail/${idProduct}`} className="btn btn-primary">
             Ver Mas
-          </a>
+          </Link>
         </Card.Body>
       </Card>
     </>

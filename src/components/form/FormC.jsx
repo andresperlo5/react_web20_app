@@ -5,7 +5,7 @@ import Form from "react-bootstrap/Form";
 import Swal from "sweetalert2";
 
 const FormC = ({ idPage }) => {
-  //Estados
+  // ---------------- STATES ----------------
   const [formulario, setFormulario] = useState({
     nombreUsuario: "",
     correoUsuario: "",
@@ -14,7 +14,7 @@ const FormC = ({ idPage }) => {
     checkUsuario: false,
     rolUsuario: "usuario",
     login: false,
-    bloqueo: false,
+    bloqueo: true,
   });
 
   const [formLog, setFormLog] = useState({
@@ -22,92 +22,140 @@ const FormC = ({ idPage }) => {
     contrasenia: "",
   });
 
-  /*  
-   const [nombreUsuario, setNombreUsuario] = useState("");
-  const [emailUsuario, setEmailUsuarioo] = useState("");
-  const [contrasenia, setContrasenia] = useState("");
-  const [repContrasenia, setRepContrasenia] = useState("");
-  const [checkUsuario, setCheckUsuario] = useState(false); */
+  const [erroresRegister, setErroresRegister] = useState({});
+  const [erroresLogin, setErroresLogin] = useState({});
+
+  const validarEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  const getClass = (error, value) => {
+    if (error) return "is-invalid";
+    if (value) return "is-valid";
+    return "";
+  };
 
   const handleChangeRegister = (ev) => {
+    const { name, value, type, checked } = ev.target;
+
     setFormulario({
       ...formulario,
-      [ev.target.name]:
-        ev.target.type === "checkbox" ? ev.target.checked : ev.target.value,
+      [name]: type === "checkbox" ? checked : value,
+    });
+
+    setErroresRegister({
+      ...erroresRegister,
+      [name]: "",
+    });
+  };
+
+  const handleChangeLogin = (ev) => {
+    const { name, value } = ev.target;
+
+    setFormLog({ ...formLog, [name]: value });
+
+    setErroresLogin({
+      ...erroresLogin,
+      [name]: "",
     });
   };
 
   const handleClickBottomRegister = (ev) => {
     ev.preventDefault();
 
+    let errores = {};
+
+    if (!formulario.nombreUsuario) {
+      errores.nombreUsuario = "Campo obligatorio";
+    }
+
+    if (!formulario.correoUsuario) {
+      errores.correoUsuario = "Campo obligatorio";
+    } else if (!validarEmail(formulario.correoUsuario)) {
+      errores.correoUsuario = "Email inválido";
+    }
+
+    if (!formulario.contrasenia) {
+      errores.contrasenia = "Campo obligatorio";
+    } else if (formulario.contrasenia.length < 8) {
+      errores.contrasenia = "Mínimo 8 caracteres";
+    }
+
+    if (!formulario.repContrasenia) {
+      errores.repContrasenia = "Campo obligatorio";
+    } else if (formulario.contrasenia !== formulario.repContrasenia) {
+      errores.repContrasenia = "Las contraseñas no coinciden";
+    }
+
+    if (!formulario.checkUsuario) {
+      errores.checkUsuario = "Debes aceptar los términos";
+    }
+
+    setErroresRegister(errores);
+
+    if (Object.keys(errores).length > 0) return;
+
     const usuariosLs = JSON.parse(localStorage.getItem("usuarios")) || [];
 
-    const {
-      nombreUsuario,
-      emailUsuairo,
-      contrasenia,
-      repContrasenia,
-      checkUsuario,
-    } = formulario;
+    Swal.fire({
+      title: "Registro Exitoso!",
+      icon: "success",
+    });
 
-    if (contrasenia && repContrasenia && contrasenia === repContrasenia) {
-      Swal.fire({
-        title: "Registro Exitoso!",
-        text: "En breve seras redirigido a iniciar tu sesion!",
-        icon: "success",
-      });
+    usuariosLs.push({
+      id: usuariosLs[usuariosLs.length - 1]?.id + 1 || 1,
+      ...formulario,
+    });
 
-      usuariosLs.push({
-        id: usuariosLs[usuariosLs.length - 1]?.id + 1 || 1,
-        ...formulario,
-      });
+    localStorage.setItem("usuarios", JSON.stringify(usuariosLs));
 
-      localStorage.setItem("usuarios", JSON.stringify(usuariosLs));
-    }
-  };
-
-  const handleChangeLogin = (ev) => {
-    setFormLog({ ...formLog, [ev.target.name]: ev.target.value });
+    setFormulario({
+      nombreUsuario: "",
+      correoUsuario: "",
+      contrasenia: "",
+      repContrasenia: "",
+      checkUsuario: false,
+      rolUsuario: "usuario",
+      login: false,
+      bloqueo: false,
+    });
+    setErroresRegister({});
   };
 
   const handleClickBottomLog = (ev) => {
     ev.preventDefault();
-    const { nombreUsuario, contrasenia } = formLog;
-    console.log(formLog);
-    const usuariosLs = JSON.parse(localStorage.getItem("usuarios"));
-    const indexUser = usuariosLs.findIndex(
-      (usuario) => usuario.nombreUsuario === nombreUsuario,
-    );
 
-    const usuarioExiste = usuariosLs.find(
-      (usuario) => usuario.nombreUsuario === nombreUsuario,
-    );
+    let errores = {};
 
-    if (!usuarioExiste) {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Usuario y/o contraseña no coinciden. USUARIO",
-      });
-
-      return;
+    if (!formLog.nombreUsuario) {
+      errores.nombreUsuario = "Campo obligatorio";
     }
 
-    if (usuarioExiste.contrasenia !== contrasenia) {
+    if (!formLog.contrasenia) {
+      errores.contrasenia = "Campo obligatorio";
+    }
+
+    setErroresLogin(errores);
+
+    if (Object.keys(errores).length > 0) return;
+
+    const usuariosLs = JSON.parse(localStorage.getItem("usuarios")) || [];
+
+    const usuarioExiste = usuariosLs.find(
+      (u) => u.nombreUsuario === formLog.nombreUsuario,
+    );
+
+    if (!usuarioExiste || usuarioExiste.contrasenia !== formLog.contrasenia) {
       Swal.fire({
         icon: "error",
-        title: "Oops...",
-        text: "Usuario y/o contraseña no coinciden. CONTRASEÑA",
+        title: "Error",
+        text: "Usuario o contraseña incorrectos",
       });
-
       return;
     }
 
     if (usuarioExiste.bloqueo) {
       Swal.fire({
         icon: "error",
-        title: "Oops...",
-        text: "Usuario bloqueado debes comunicarte con un administrador",
+        title: "Usuario bloqueado",
       });
       return;
     }
@@ -115,136 +163,146 @@ const FormC = ({ idPage }) => {
     usuarioExiste.login = true;
 
     sessionStorage.setItem("usuarioLog", JSON.stringify(usuarioExiste));
-    usuariosLs[indexUser] = usuarioExiste;
 
-    localStorage.setItem("usuarios", JSON.stringify(usuariosLs));
+    setFormLog({
+      nombreUsuario: "",
+      contrasenia: "",
+    });
+    setErroresLogin({});
 
-    if (usuarioExiste.rolUsuario === "admin") {
-      location.href = "/home-admin";
-    } else {
-      location.href = "/home-user";
-    }
+    location.href =
+      usuarioExiste.rolUsuario === "admin" ? "/home-admin" : "/home-user";
   };
 
-  return (
-    <>
-      {idPage === "login" ? (
-        <Form className="w-25">
-          <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Label>Nombre de Usuario</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter email"
-              name="nombreUsuario"
-              onChange={handleChangeLogin}
-            />
-            <Form.Text className="text-muted">
-              We'll never share your email with anyone else.
-            </Form.Text>
-          </Form.Group>
+  const loginForm = (
+    <Form className="w-25">
+      <Form.Group className="mb-3">
+        <Form.Label>Usuario</Form.Label>
+        <Form.Control
+          name="nombreUsuario"
+          onChange={handleChangeLogin}
+          className={getClass(
+            erroresLogin.nombreUsuario,
+            formLog.nombreUsuario,
+          )}
+        />
+        <Form.Control.Feedback type="invalid">
+          {erroresLogin.nombreUsuario}
+        </Form.Control.Feedback>
+      </Form.Group>
 
-          <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Label>Contraseña</Form.Label>
-            <Form.Control
-              type="password"
-              name="contrasenia"
-              placeholder="Enter email"
-              onChange={handleChangeLogin}
-            />
-            <Form.Text className="text-muted">
-              We'll never share your email with anyone else.
-            </Form.Text>
-          </Form.Group>
+      <Form.Group className="mb-3">
+        <Form.Label>Contraseña</Form.Label>
+        <Form.Control
+          type="password"
+          name="contrasenia"
+          onChange={handleChangeLogin}
+          className={getClass(erroresLogin.contrasenia, formLog.contrasenia)}
+        />
+        <Form.Control.Feedback type="invalid">
+          {erroresLogin.contrasenia}
+        </Form.Control.Feedback>
+      </Form.Group>
 
-          <Container className="d-flex justify-content-center">
-            <Button
-              variant="primary"
-              type="submit"
-              className="w-75"
-              onClick={handleClickBottomLog}
-            >
-              Ingresar
-            </Button>
-          </Container>
-        </Form>
-      ) : (
-        <Form className="w-25">
-          <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Label>Nombre de Usuario</Form.Label>
-            <Form.Control
-              value={formulario.nombreUsuario}
-              type="text"
-              name="nombreUsuario"
-              placeholder="Enter email"
-              /* onChange={(ev) => setNombreUsuario(ev.target.value)} */
-              onChange={handleChangeRegister}
-            />
-            <Form.Text className="text-muted">
-              We'll never share your email with anyone else.
-            </Form.Text>
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Label>Correo del Usuario</Form.Label>
-            <Form.Control
-              value={formulario.correoUsuario}
-              type="email"
-              name="correoUsuario"
-              placeholder="Enter email"
-              onChange={handleChangeRegister}
-            />
-            <Form.Text className="text-muted">
-              We'll never share your email with anyone else.
-            </Form.Text>
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Label>Contraseña</Form.Label>
-            <Form.Control
-              type="password"
-              value={formulario.contrasenia}
-              name="contrasenia"
-              placeholder="Enter email"
-              onChange={handleChangeRegister}
-            />
-            <Form.Text className="text-muted">
-              We'll never share your email with anyone else.
-            </Form.Text>
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="formBasicPassword">
-            <Form.Label>Repetir Contraseña</Form.Label>
-            <Form.Control
-              type="password"
-              value={formulario.repContrasenia}
-              name="repContrasenia"
-              placeholder="Password"
-              onChange={handleChangeRegister}
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formBasicCheckbox">
-            <Form.Check
-              type="checkbox"
-              value={formulario.checkUsuario}
-              label="Aceptar terminos y condiciones"
-              onChange={handleChangeRegister}
-              name="checkUsuario"
-            />
-          </Form.Group>
-          <Container className="d-flex justify-content-center">
-            <Button
-              variant="primary"
-              type="submit"
-              className="w-75"
-              onClick={handleClickBottomRegister}
-            >
-              Enviar Datos
-            </Button>
-          </Container>
-        </Form>
-      )}
-    </>
+      <Container className="d-flex justify-content-center">
+        <Button className="w-75" onClick={handleClickBottomLog}>
+          Ingresar
+        </Button>
+      </Container>
+    </Form>
   );
+
+  const registerForm = (
+    <Form className="w-25">
+      <Form.Group className="mb-3">
+        <Form.Label>Usuario</Form.Label>
+        <Form.Control
+          name="nombreUsuario"
+          value={formulario.nombreUsuario}
+          onChange={handleChangeRegister}
+          className={getClass(
+            erroresRegister.nombreUsuario,
+            formulario.nombreUsuario,
+          )}
+        />
+        <Form.Control.Feedback type="invalid">
+          {erroresRegister.nombreUsuario}
+        </Form.Control.Feedback>
+      </Form.Group>
+
+      <Form.Group className="mb-3">
+        <Form.Label>Email</Form.Label>
+        <Form.Control
+          name="correoUsuario"
+          value={formulario.correoUsuario}
+          onChange={handleChangeRegister}
+          className={getClass(
+            erroresRegister.correoUsuario,
+            formulario.correoUsuario,
+          )}
+        />
+        <Form.Control.Feedback type="invalid">
+          {erroresRegister.correoUsuario}
+        </Form.Control.Feedback>
+      </Form.Group>
+
+      <Form.Group className="mb-3">
+        <Form.Label>Contraseña</Form.Label>
+        <Form.Control
+          type="password"
+          name="contrasenia"
+          value={formulario.contrasenia}
+          onChange={handleChangeRegister}
+          className={getClass(
+            erroresRegister.contrasenia,
+            formulario.contrasenia,
+          )}
+        />
+        <Form.Control.Feedback type="invalid">
+          {erroresRegister.contrasenia}
+        </Form.Control.Feedback>
+      </Form.Group>
+
+      <Form.Group className="mb-3">
+        <Form.Label>Repetir contraseña</Form.Label>
+        <Form.Control
+          type="password"
+          name="repContrasenia"
+          value={formulario.repContrasenia}
+          onChange={handleChangeRegister}
+          className={getClass(
+            erroresRegister.repContrasenia,
+            formulario.repContrasenia,
+          )}
+        />
+        <Form.Control.Feedback type="invalid">
+          {erroresRegister.repContrasenia}
+        </Form.Control.Feedback>
+      </Form.Group>
+
+      <Form.Group className="mb-3">
+        <Form.Check
+          type="checkbox"
+          label="Aceptar términos"
+          name="checkUsuario"
+          onChange={handleChangeRegister}
+          isInvalid={erroresRegister.checkUsuario}
+        />
+        <Form.Control.Feedback type="invalid">
+          {erroresRegister.checkUsuario}
+        </Form.Control.Feedback>
+      </Form.Group>
+
+      <Container className="d-flex justify-content-center">
+        <Button className="w-75" onClick={handleClickBottomRegister}>
+          Registrarse
+        </Button>
+      </Container>
+    </Form>
+  );
+
+  // 🔥 RETURN LIMPIO
+  return <>{idPage === "login" ? loginForm : registerForm}</>;
 };
 
 export default FormC;

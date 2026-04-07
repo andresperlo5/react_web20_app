@@ -1,6 +1,7 @@
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
+import { NavLink } from "react-router";
 import Swal from "sweetalert2";
 
 const NavbarC = () => {
@@ -33,8 +34,9 @@ const NavbarC = () => {
     <>
       <Navbar expand="lg" className="bg-body-tertiary">
         <Container fluid>
-          <Navbar.Brand
-            href={
+          <NavLink
+            className="nav-link"
+            to={
               usuarioLog?.rolUsuario === "admin"
                 ? "/home-admin"
                 : usuarioLog?.rolUsuario === "usuario"
@@ -43,52 +45,74 @@ const NavbarC = () => {
             }
           >
             Logo
-          </Navbar.Brand>
+          </NavLink>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             {usuarioLog?.rolUsuario === "admin" ? (
               <Nav className="ms-auto">
-                <Nav.Link
-                  href={
-                    usuarioLog?.rolUsuario === "admin" ? "/home-admin" : "/"
-                  }
+                <NavLink
+                  className="nav-link"
+                  to={usuarioLog?.rolUsuario === "admin" ? "/home-admin" : "/"}
                 >
                   Inicio
-                </Nav.Link>
-                <Nav.Link href="/admin-users">Panel Usuarios</Nav.Link>
-                <Nav.Link href="/admin-products">Panel Productos</Nav.Link>
+                </NavLink>
+                <NavLink className="nav-link" to="/admin-users">
+                  Panel Usuarios
+                </NavLink>
+                <NavLink className="nav-link" to="/admin-products">
+                  Panel Productos
+                </NavLink>
               </Nav>
             ) : usuarioLog?.rolUsuario === "usuario" ? (
               <Nav className="ms-auto">
-                <Nav.Link
-                  href={
-                    usuarioLog?.rolUsuario === "usuario" ? "/home-user" : "/"
-                  }
+                <NavLink
+                  className="nav-link"
+                  to={usuarioLog?.rolUsuario === "usuario" ? "/home-user" : "/"}
                 >
                   Inicio
-                </Nav.Link>
-                <Nav.Link href="/user-fav">Favoritos</Nav.Link>
-                <Nav.Link href="/user-cart">Carrito</Nav.Link>
-                <Nav.Link href="/admin-products">Galeria</Nav.Link>
+                </NavLink>
+                <NavLink className="nav-link" to="/user-fav">
+                  Favoritos
+                </NavLink>
+                <NavLink className="nav-link" to="/user-cart">
+                  Carrito
+                </NavLink>
+                <NavLink className="nav-link" to="/user-galery">
+                  Galeria
+                </NavLink>
               </Nav>
             ) : (
               <Nav className="ms-auto">
-                <Nav.Link href="/">Inicio</Nav.Link>
-                <Nav.Link href="/contact">Contacto</Nav.Link>
-                <Nav.Link href="/aboutUs">Sobre Nosotros</Nav.Link>
+                <NavLink className="nav-link" to="/">
+                  Inicio
+                </NavLink>
+                <NavLink className="nav-link" to="/contact">
+                  Contacto
+                </NavLink>
+                <NavLink className="nav-link" to="/aboutUs">
+                  Sobre Nosotros
+                </NavLink>
               </Nav>
             )}
             {usuarioLog?.rolUsuario === "admin" ||
             usuarioLog?.rolUsuario === "usuario" ? (
               <Nav className="ms-auto">
-                <Nav.Link href="#" onClick={cerrarSesionUsuario}>
+                <NavLink
+                  className="nav-link"
+                  to="#"
+                  onClick={cerrarSesionUsuario}
+                >
                   Cerrar Sesion
-                </Nav.Link>
+                </NavLink>
               </Nav>
             ) : (
               <Nav className="ms-auto">
-                <Nav.Link href="/login">Iniciar Sesion</Nav.Link>
-                <Nav.Link href="/register">Registrarse</Nav.Link>
+                <NavLink className="nav-link" to="/login">
+                  Iniciar Sesion
+                </NavLink>
+                <NavLink className="nav-link" to="/register">
+                  Registrarse
+                </NavLink>
               </Nav>
             )}
           </Navbar.Collapse>

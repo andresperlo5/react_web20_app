@@ -14,24 +14,71 @@ import AdminUsersPage from "./pages/AdminUsersPage";
 import AdminCreateProductPage from "./pages/AdminCreateProductPage";
 import FavPage from "./pages/FavPage";
 import CartPage from "./pages/CartPage";
+import PrivateRoute from "./components/privateroute/PrivateRoute";
 
 const App = () => {
   return (
     <>
-      <NavbarC />
       <Router>
+        <NavbarC />
         <Routes>
-          <Route path="/home-user" element={<UserPage />} />
-          <Route path="/user-fav" element={<FavPage />} />
-          <Route path="/user-cart" element={<CartPage />} />
+          <Route
+            path="/home-user"
+            element={
+              <PrivateRoute rolRuta="usuario">
+                <UserPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/user-fav"
+            element={
+              <PrivateRoute rolRuta="usuario">
+                <FavPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/user-cart"
+            element={
+              <PrivateRoute rolRuta="usuario">
+                <CartPage />
+              </PrivateRoute>
+            }
+          />
           <Route
             path="/admin-products/createEdit/:idProduct"
-            element={<AdminCreateProductPage />}
+            element={
+              <PrivateRoute rolRuta="admin">
+                <AdminCreateProductPage />
+              </PrivateRoute>
+            }
           />
-          <Route path="/admin-products" element={<AdminProductsPage />} />
-          <Route path="/admin-users" element={<AdminUsersPage />} />
-          <Route path="/home-admin" element={<AdminPage />} />
-          <Route path="/product-details" element={<ProductDetailPage />} />
+          <Route
+            path="/admin-products"
+            element={
+              <PrivateRoute rolRuta="admin">
+                <AdminProductsPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin-users"
+            element={
+              <PrivateRoute rolRuta="admin">
+                <AdminUsersPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/home-admin"
+            element={
+              <PrivateRoute rolRuta="admin">
+                <AdminPage />
+              </PrivateRoute>
+            }
+          />
+          {/*   <Route path="/product-details" element={<ProductDetailPage />} /> */}
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route
@@ -41,8 +88,8 @@ const App = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
+        <Footer />
       </Router>
-      <Footer />
     </>
   );
 };
