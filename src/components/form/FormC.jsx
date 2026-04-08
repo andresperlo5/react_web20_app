@@ -301,7 +301,6 @@ const FormC = ({ idPage }) => {
     </Form>
   );
 
-  // 🔥 RETURN LIMPIO
   return <>{idPage === "login" ? loginForm : registerForm}</>;
 };
 

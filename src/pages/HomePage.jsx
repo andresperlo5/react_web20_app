@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import CardC from "../components/card/CardC";
 import CarouselC from "../components/carousel/CarouselC";
 import { Col, Container, Row } from "react-bootstrap";
+import { useChangeTitlePage } from "../helpers/changeTitle";
 
 const HomePage = ({ idPage }) => {
   const [productos, setProductos] = useState([]);
@@ -40,6 +41,7 @@ const HomePage = ({ idPage }) => {
   //componente se inicializa y se monta
   useEffect(() => {
     obtenerProductosFakeStore();
+    useChangeTitlePage("home");
   }, []);
 
   //componente se actualiza

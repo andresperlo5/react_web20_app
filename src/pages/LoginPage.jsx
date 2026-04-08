@@ -1,7 +1,12 @@
-import { Container, Row } from "react-bootstrap"
-import FormC from "../components/form/FormC"
+import { Container, Row } from "react-bootstrap";
+import FormC from "../components/form/FormC";
+import { useEffect } from "react";
+import { useChangeTitlePage } from "../helpers/changeTitle";
 
 const LoginPage = () => {
+  useEffect(() => {
+    useChangeTitlePage("login");
+  }, []);
   return (
     <>
       <Container className="my-5">
@@ -10,7 +15,7 @@ const LoginPage = () => {
         </Row>
       </Container>
     </>
-  )
-}
+  );
+};
 
-export default LoginPage
+export default LoginPage;
